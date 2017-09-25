@@ -3,49 +3,33 @@
     {
       "vm_name":"Windows Server v1709 Container Host",
       "type": "hyperv-iso",
-      "disk_size": 61440,
-      "floppy_files": [],
-      "http_directory": "./",
-      "boot_wait": "0s",
-      "boot_command": [
-        "a<wait>a<wait>a"
+      "disk_size": 41440,
+      "floppy_files": [
+          "./windows/answerfiles/autounattend.xml"
       ],
-      "iso_url": "{{user `iso_url`}}",
+      "http_directory": "./windows",
+      "iso_url": "{{user `iso_url`}}",      
+      "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "sha1",
-      "iso_checksum": "{{user  `iso_checksum`}}",
+      "boot_wait": "0s",
       "communicator":"winrm",
-      "winrm_username": "packer",
-      "winrm_password": "packer",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
       "winrm_timeout" : "4h",
-      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",  
       "ram_size": 2048,
       "cpu": 2,
-      "generation": 2,
-      "switch_name":"WIFI Switch",
+      "switch_name":"CORP",
       "enable_secure_boot":true,
       "enable_virtualization_extensions":true
-    }
-  ],
-  "provisioners": [
-    {
-      "type": "powershell",
-      "elevated_user":"packer",
-      "elevated_password":"packer",
-      "scripts": [
-        "./windows/common/install-7zip.ps1",
-        "./windows/common/install-chef.ps1",
-        "./windows/common/compile-dotnet-assemblies.ps1",
-        "./windows/common/cleanup.ps1",
-        "./windows/common/ultradefrag.ps1",
-        "./windows/common/sdelete.ps1"
-      ]
     }
   ],
   "post-processors": [
     {
       "type": "vagrant",
       "keep_input_artifact": false,
-      "output": "{{.Provider}}_windows-2012r2_chef.box"
+      "output": "{{.Provider}}_windowsserverv1709.box",
+      "vagrantfile_template": "vagrantfile-windowsserverv1709.template"
     }
   ]
 }
