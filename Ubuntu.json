@@ -1,0 +1,42 @@
+{
+  "builders": [
+  {
+    "type": "hyperv-iso",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user  `iso_checksum`}}",
+    "iso_checksum_type": "sha1",
+    "cpu": 2,
+    "ram_size": 2048,
+    "switch_name": "WIFI Switch",
+    "vm_name": "Ubuntu-16.04 Base",
+    "communicator": "ssh",
+    "ssh_username": "packer",
+    "ssh_password": "packer",
+    "ssh_timeout": "1h",
+    "http_directory": "./",
+    "boot_wait": "5s",
+    "boot_command": [
+      "<esc><wait10><esc><esc><enter><wait>",
+        "set gfxpayload=1024x768<enter>",
+        "linux /install/vmlinuz ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "hostname={{.Name}} ",
+        "fb=false debconf/frontend=noninteractive ",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+        "keyboard-configuration/variant=USA console-setup/ask_detect=false <enter>",
+        "initrd /install/initrd.gz<enter>",
+        "boot<enter>"
+      ],
+    "shutdown_command": "echo 'packer' | sudo -S -E shutdown -P now",
+    "generation": 2
+  }
+],
+ "post-processors": [
+  {
+    "type": "vagrant",
+    "keep_input_artifact": false,
+    "output": "{{.Provider}}_Ubunt-16-04-server-amd64.box"
+  }
+]
+}
